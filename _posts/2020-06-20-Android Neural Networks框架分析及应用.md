@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      Android源码中JNI用法总结
-subtitle:   JNI两种注册过程
+title:      Android Neural Networks框架分析及应用
+subtitle:   ANN API
 date:       2020-06-20
 author:     WMY
 header-img: img/2020-01-26_114950.png
@@ -15,6 +15,12 @@ tags:
 
 ![](img/ANNAPI/pic1.png)
 
-------
+
 ![](https://wwmmyy2023.github.io/img/ANNAPI/pic1.png)
 
+
+![](http://wwmmyy2023.github.io/img/blog-desktop.jpg)
+
+
+
+![](http://wwmmyy2023.github.io/img/ANNAPI/pic1.png)
