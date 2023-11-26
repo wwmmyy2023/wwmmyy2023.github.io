@@ -11,4 +11,10 @@ tags:
 ---
 
 
-img/ANNAPI/pic1.png
+
+
+![](img/ANNAPI/pic1.png)
+
+------
+![](https://wwmmyy2023.github.io/img/ANNAPI/pic1.png)
+
