@@ -2,9 +2,9 @@
 title: wmy Blog
 SEOTitle: WMY的博客 | wmy Blog
 header-img: img/home-bg.jpg
-email: wmypro@gmail.com
-description: "这里是 @wmyWMY 的个人博客，与你一起发现更大的世界 | 要做一个有 swag 的程序员"
-keyword: "WMY, wmyWMY, wmy, 鬼栈, wmypro, @wmypro, WMY的博客, wmy Blog, 博客, 个人网站, 互联网, Web, AI, android framework, thermal, driver"
+email: zswmydyx@gmail.com
+description: "每个胜利背后都有许多尝试"
+keyword: "WMY的博客, 个人网站, 互联网, Web, AI, android framework, thermal, driver"
 url: "https://wwmmyy2023.github.io/" # your host, for absolute URL
 baseurl: "" # for example, '/blog' if your blog hosted on 'host/blog'
 
@@ -13,11 +13,11 @@ future: true
 
 # SNS settings
 RSS: false
-weibo_username: wmypro
-zhihu_username: wmypro
-github_username: wmypro
-twitter_username: wmypro
-#facebook_username:  wmypro
+weibo_username: wwmmyy
+zhihu_username: wwmmyy
+github_username: wwmmyy
+twitter_username: wwmmyy
+#facebook_username:  wwmmyy
 #linkedin_username:  firstname-lastname-idxxxx
 
 # Build settings
@@ -75,7 +75,7 @@ ga_domain: huangxuan.me
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
 sidebar-about-description: "要做一个有 swag 的程序员 <br> React Team @ Meta"
-sidebar-avatar: https://github.com/wmypro.png # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: img/post-bg-e2e-ux.jpg # use absolute URL, seeing it's used in both `/` and `/about/`
 
 # Featured Tags
 featured-tags: true # whether or not using Feature-Tags
@@ -91,12 +91,11 @@ page-mathjax: false
 # Friends
 friends:
   [
-    { title: "乱序（Midare）", href: "http://mida.re/" },
-    { title: "Ebn Zhang", href: "https://ebnbin.dev/" },
-    { title: "Kun Qian", href: "http://kunq.me" },
-    { title: "Sherry Woo", href: "https://sherrywoo.me/" },
-    { title: "SmdCn", href: "http://blog.smdcn.net" },
-    { title: "JiyinYiyong", href: "http://tiye.me/" },
-    { title: "DHong Say", href: "http://dhong.co" },
-    { title: "尹峰以为", href: "http://ingf.github.io/" },
+    {
+        title: "Android SourceCode",
+        href: "https://cs.android.com/"
+    },{
+        title: "perfetto",
+        href: "https://perfetto.dev/docs/"
+    }
   ]
