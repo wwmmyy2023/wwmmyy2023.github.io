@@ -4,7 +4,7 @@ title:      Android 热缓解框架解析
 subtitle:   
 date:       2020-06-22
 author:     WMY
-header-img: img/17.jpg
+header-img: img/tag-bg.jpg
 catalog: true
 tags:
     - 工作

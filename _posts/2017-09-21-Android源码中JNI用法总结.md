@@ -4,7 +4,7 @@ title:      Android源码中JNI用法总结
 subtitle:   JNI两种注册过程
 date:       2017-09-21
 author:     WMY
-header-img: img/02.jpg
+header-img: img/post-bg-web.jpg
 catalog: 	 true
 tags: 
     - 工作
