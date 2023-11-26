@@ -15,12 +15,8 @@ tags:
 
 ![](img/ANNAPI/pic1.png)
 
+sssssss
 
 ![](https://wwmmyy2023.github.io/img/ANNAPI/pic1.png)
 
 
-![](http://wwmmyy2023.github.io/img/blog-desktop.jpg)
-
-
-
-![](http://wwmmyy2023.github.io/img/ANNAPI/pic1.png)
