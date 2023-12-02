@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Android 热缓解框架解析
+title:      Android热缓解框架解析_Framework篇
 subtitle:   
 date:       2020-06-22
 author:     WMY
@@ -82,7 +82,7 @@ Android 10 中的热服务利用来自 Thermal HAL 2.0 的各种缓解信号不�
 
 在 Android 10 中，框架中的热服务利用来自 Thermal HAL 2.0 的各种缓解信号不断进行监控，并向其客户端提供有关限制严重级别的反馈，其中包括内部组件和 Android 应用。下图为 Android 10 中热缓解处理流程的模型。
 
-![](.\therm_mitigation_flow.png)
+![](https://wwmmyy2023.github.io/img/therm_mitigation_flow.png)
 
 
 下面以其中一个方法的调用流程为例，探究整个调用流程的实现机制；上层应用通过注册如下监听回调获取系统温度触发等级信息。
