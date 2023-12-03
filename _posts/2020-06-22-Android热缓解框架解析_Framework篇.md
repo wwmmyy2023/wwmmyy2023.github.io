@@ -73,11 +73,11 @@ Android 10 中的热服务利用来自 Thermal HAL 2.0 的各种缓解信号不�
 
 当前系统中会受到Thermal热缓解限制的模块有：
 
-		1.Brightness屏幕亮度模块：手机主板温度发热达到SEVERE等级时会限制屏幕最大亮度(该功能启用需要手机厂商实现相关配置参数)
-		2.Jobschedule：超过严重等级时job会全限制执行，超过中等温度等级时job会部分限制
-		3.BlurController： 发热达到CRITICAL等级时会停止手机跨窗模糊特效功能
-		4.BackgroundDexOptService：发热达到MODERATE等级后会暂停dex2oat
-		5.DeviceStateProvider： 发热达到CRITICAL等级后，会暂停DeviceState接口获取值，(该功能启用需要手机厂商实现相关配置参数)
+	1.Brightness屏幕亮度模块：手机主板温度发热达到SEVERE等级时会限制屏幕最大亮度(该功能启用需要手机厂商实现相关配置参数)
+	2.Jobschedule：超过严重等级时job会全限制执行，超过中等温度等级时job会部分限制
+	3.BlurController： 发热达到CRITICAL等级时会停止手机跨窗模糊特效功能
+	4.BackgroundDexOptService：发热达到MODERATE等级后会暂停dex2oat
+	5.DeviceStateProvider： 发热达到CRITICAL等级后，会暂停DeviceState接口获取值，(该功能启用需要手机厂商实现相关配置参数)
 
 
 此外，Android系统内部组件还可以调用thermalHal支持的其他功能接口：
@@ -286,145 +286,144 @@ Android 10 中的热服务利用来自 Thermal HAL 2.0 的各种缓解信号不�
 
 	frameworks/base/services/core/java/com/android/server/display/BrightnessThrottler.java
 	
-	    @Override
-	    public void notifyThrottling(Temperature temp) {
-	        if (DEBUG) {
-	            Slog.d(TAG, "New thermal throttling status = " + temp.getStatus());
-	        }
-	        mHandler.post(() -> {
-	            final @Temperature.ThrottlingStatus int status = temp.getStatus();
-	            thermalStatusChanged(status);
-	        });
-	    }
-	    private final class SkinThermalStatusObserver extends IThermalEventListener.Stub {
-	        void startObserving() {
-	            if (mStarted) {
-	                if (DEBUG) {
-	                    Slog.d(TAG, "Thermal status observer already started");
-	                }
-	                return;
-	            }
-	            mThermalService = mInjector.getThermalService();
-	            if (mThermalService == null) {
-	                Slog.e(TAG, "Could not observe thermal status. Service not available");
-	                return;
-	            }
-	            try {
-	                // We get a callback immediately upon registering so there's no need to query
-	                // for the current value.
-	                mThermalService.registerThermalEventListenerWithType(this, Temperature.TYPE_SKIN);
-	                mStarted = true;
-	            } catch (RemoteException e) {
-	                Slog.e(TAG, "Failed to register thermal status listener", e);
-	            }
-	        }
+    @Override
+    public void notifyThrottling(Temperature temp) {
+        if (DEBUG) {
+            Slog.d(TAG, "New thermal throttling status = " + temp.getStatus());
+        }
+        mHandler.post(() -> {
+            final @Temperature.ThrottlingStatus int status = temp.getStatus();
+            thermalStatusChanged(status);
+        });
+    }
+    private final class SkinThermalStatusObserver extends IThermalEventListener.Stub {
+        void startObserving() {
+            if (mStarted) {
+                if (DEBUG) {
+                    Slog.d(TAG, "Thermal status observer already started");
+                }
+                return;
+            }
+            mThermalService = mInjector.getThermalService();
+            if (mThermalService == null) {
+                Slog.e(TAG, "Could not observe thermal status. Service not available");
+                return;
+            }
+            try {
+                // We get a callback immediately upon registering so there's no need to query
+                // for the current value.
+                mThermalService.registerThermalEventListenerWithType(this, Temperature.TYPE_SKIN);
+                mStarted = true;
+            } catch (RemoteException e) {
+                Slog.e(TAG, "Failed to register thermal status listener", e);
+            }
+        }
 	
 	frameworks/base/services/core/java/com/android/server/display/HighBrightnessModeController.java
 	
-	    @VisibleForTesting
-	    boolean isThermalThrottlingActive() {
-	        // We would've liked HBM, but we got NBM (normal brightness mode) because of thermals. 屏幕高亮模式是否启用会受到thermal影响
-	        return mUnthrottledBrightness > mHbmData.transitionPoint
-	                && mBrightness <= mHbmData.transitionPoint
-	                && mThrottlingReason == BrightnessInfo.BRIGHTNESS_MAX_REASON_THERMAL;
-	    }
+    @VisibleForTesting
+    boolean isThermalThrottlingActive() {
+        // We would've liked HBM, but we got NBM (normal brightness mode) because of thermals. 屏幕高亮模式是否启用会受到thermal影响
+        return mUnthrottledBrightness > mHbmData.transitionPoint
+                && mBrightness <= mHbmData.transitionPoint
+                && mThrottlingReason == BrightnessInfo.BRIGHTNESS_MAX_REASON_THERMAL;
+    }
 
 
 
 2.Jobschedule： 超过严重等级时job会全限制执行，超过中等温度等级时job会部分限制
 
 	frameworks/base/apex/jobscheduler/service/java/com/android/server/job/restrictions/ThermalStatusRestriction.java
-		powerManager.addThermalStatusListener(new OnThermalStatusChangedListener() {
-		    @Override
-		    public void onThermalStatusChanged(int status) {
-	
+	powerManager.addThermalStatusListener(new OnThermalStatusChangedListener() {
 	    @Override
-	    public boolean isJobRestricted(JobStatus job) {
-	        if (mThermalStatus >= UPPER_THRESHOLD) { //超过严重等级时job会全限制
-	            return true;
-	        }
-	        final int priority = job.getEffectivePriority();
-	        if (mThermalStatus >= HIGHER_PRIORITY_THRESHOLD) {//超过中等温度等级时job会部分限制
-	            // For moderate throttling:
-	            // Let all user-initiated jobs run.
-	            // Only let expedited jobs run if:
-	            // 1. They haven't previously run
-	            // 2. They're already running and aren't yet in overtime
-	            // Only let high priority jobs run if:
-	            //   They are already running and aren't yet in overtime
-	            // Don't let any other job run.
-	            if (job.shouldTreatAsUserInitiatedJob()) {
-	                return false;
-	            }
-	            if (job.shouldTreatAsExpeditedJob()) {
-	                return job.getNumPreviousAttempts() > 0
-	                        || (mService.isCurrentlyRunningLocked(job)
-	                                && mService.isJobInOvertimeLocked(job));
-	            }
-	            if (priority == JobInfo.PRIORITY_HIGH) {
-	                return !mService.isCurrentlyRunningLocked(job)
-	                        || mService.isJobInOvertimeLocked(job);
-	            }
-	            return true;
-	        }
-	        if (mThermalStatus >= LOW_PRIORITY_THRESHOLD) {
-	            // For light throttling, throttle all min priority jobs and all low priority jobs that
-	            // aren't already running or have been running for long enough.
-	            return priority == JobInfo.PRIORITY_MIN
-	                    || (priority == JobInfo.PRIORITY_LOW
-	                        && (!mService.isCurrentlyRunningLocked(job)
-	                            || mService.isJobInOvertimeLocked(job)));
-	        }
-	        return false;
-	    }
+	    public void onThermalStatusChanged(int status) {
+
+    @Override
+    public boolean isJobRestricted(JobStatus job) {
+        if (mThermalStatus >= UPPER_THRESHOLD) { //超过严重等级时job会全限制
+            return true;
+        }
+        final int priority = job.getEffectivePriority();
+        if (mThermalStatus >= HIGHER_PRIORITY_THRESHOLD) {//超过中等温度等级时job会部分限制
+            // For moderate throttling:
+            // Let all user-initiated jobs run.
+            // Only let expedited jobs run if:
+            // 1. They haven't previously run
+            // 2. They're already running and aren't yet in overtime
+            // Only let high priority jobs run if:
+            //   They are already running and aren't yet in overtime
+            // Don't let any other job run.
+            if (job.shouldTreatAsUserInitiatedJob()) {
+                return false;
+            }
+            if (job.shouldTreatAsExpeditedJob()) {
+                return job.getNumPreviousAttempts() > 0
+                        || (mService.isCurrentlyRunningLocked(job)
+                                && mService.isJobInOvertimeLocked(job));
+            }
+            if (priority == JobInfo.PRIORITY_HIGH) {
+                return !mService.isCurrentlyRunningLocked(job)
+                        || mService.isJobInOvertimeLocked(job);
+            }
+            return true;
+        }
+        if (mThermalStatus >= LOW_PRIORITY_THRESHOLD) {
+            // For light throttling, throttle all min priority jobs and all low priority jobs that
+            // aren't already running or have been running for long enough.
+            return priority == JobInfo.PRIORITY_MIN
+                    || (priority == JobInfo.PRIORITY_LOW
+                        && (!mService.isCurrentlyRunningLocked(job)
+                            || mService.isJobInOvertimeLocked(job)));
+        }
+        return false;
+    }
 
 
 3.BlurController： 跨窗模糊 发热达到CRITICAL等级时会停止手机跨窗模糊特效功能
 
 	frameworks/base/services/core/java/com/android/server/wm/BlurController.java
-	        powerManager.addThermalStatusListener((status) -> {
-	            mCriticalThermalStatus = status >= THERMAL_STATUS_CRITICAL;
-	            updateBlurEnabled();
-	        });
-	        mCriticalThermalStatus = powerManager.getCurrentThermalStatus() >= THERMAL_STATUS_CRITICAL;
+    powerManager.addThermalStatusListener((status) -> {
+        mCriticalThermalStatus = status >= THERMAL_STATUS_CRITICAL;
+        updateBlurEnabled();
+    });
+    mCriticalThermalStatus = powerManager.getCurrentThermalStatus() >= THERMAL_STATUS_CRITICAL;
 	
 	
 4.dex2oat优化： BackgroundDexOptService  主动获取热等级 发热达到MODERATE等级后会暂停dex2oat
 
 	frameworks/base/services/core/java/com/android/server/pm/BackgroundDexOptService.java
-	    /** Evaluate whether or not idle optimizations should continue. */
-	    @Status
-	    private int abortIdleOptimizations(long lowStorageThreshold) {
-	        if (isCancelling()) {
-	            // JobScheduler requested an early abort.
-	            return STATUS_ABORT_BY_CANCELLATION;
-	        }
-	
-	        // Abort background dexopt if the device is in a moderate or stronger thermal throttling
-	        // state. 发热达到MODERATE等级后会暂停dex2oat
-	        int thermalStatus = mInjector.getCurrentThermalStatus();
-	        if (DEBUG) {
-	            Log.d(TAG, "Thermal throttling status during bgdexopt: " + thermalStatus);
-	        }
-	        if (thermalStatus >= mThermalStatusCutoff) {
-	            return STATUS_ABORT_THERMAL;
-	        }
-	
-	        int getCurrentThermalStatus() {
-	            IThermalService thermalService = IThermalService.Stub.asInterface(
-	                    ServiceManager.getService(Context.THERMAL_SERVICE));
-	            try {
-	                return thermalService.getCurrentThermalStatus();
-	            } catch (RemoteException e) {
-	                return STATUS_ABORT_THERMAL;
-	            }
-	        }
-	
-	        int getDexOptThermalCutoff() {
-	            return SystemProperties.getInt(
-	                    "dalvik.vm.dexopt.thermal-cutoff", THERMAL_CUTOFF_DEFAULT);
-	        }
+    /** Evaluate whether or not idle optimizations should continue. */
+    @Status
+    private int abortIdleOptimizations(long lowStorageThreshold) {
+        if (isCancelling()) {
+            // JobScheduler requested an early abort.
+            return STATUS_ABORT_BY_CANCELLATION;
+        }
 
+        // Abort background dexopt if the device is in a moderate or stronger thermal throttling
+        // state. 发热达到MODERATE等级后会暂停dex2oat
+        int thermalStatus = mInjector.getCurrentThermalStatus();
+        if (DEBUG) {
+            Log.d(TAG, "Thermal throttling status during bgdexopt: " + thermalStatus);
+        }
+        if (thermalStatus >= mThermalStatusCutoff) {
+            return STATUS_ABORT_THERMAL;
+        }
+
+        int getCurrentThermalStatus() {
+            IThermalService thermalService = IThermalService.Stub.asInterface(
+                    ServiceManager.getService(Context.THERMAL_SERVICE));
+            try {
+                return thermalService.getCurrentThermalStatus();
+            } catch (RemoteException e) {
+                return STATUS_ABORT_THERMAL;
+            }
+        }
+
+        int getDexOptThermalCutoff() {
+            return SystemProperties.getInt(
+                    "dalvik.vm.dexopt.thermal-cutoff", THERMAL_CUTOFF_DEFAULT);
+        }
 
 
 5.DeviceStateProvider： 发热达到CRITICAL等级后，会暂停DeviceState接口获取值，(该功能启用需要手机厂商实现相关配置参数)
