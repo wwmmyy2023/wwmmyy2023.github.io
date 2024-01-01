@@ -4,7 +4,7 @@ title:      Android Thermal热缓解框架解析_Kernel篇
 subtitle:   
 date:       2023-12-22
 author:     WMY
-header-img: img/ppost-bg-rwd.jpg
+header-img: img/bg-me-2022.jpg
 catalog: true
 tags:
     - 工作
@@ -40,9 +40,6 @@ thermal cooling device：系统温控的执行者，实施冷却措施的驱动�
 ![](https://wwmmyy2023.github.io/img/thermal/thermal_core.png)
 
 #### 2.3 Thermal Core的新旧架构优缺点分析
-
-**thermal Core 新流程 VS 旧流程: **
-
 
 **(1) 旧架构的缺点：**
 
@@ -125,6 +122,7 @@ thermal_zone_device_register 代表注册一个thermal zone节点，他的温度
 #### 3.4 典型的Thermal zone sensor 运行示例
 
 下面以一个名称为”tboard1“ 的thermal zone初始化加载为例，展示下thermal zone的初始化流程。
+
 第1步：设备树中配置对应的设备和thermal zone
 
 第2步：kernel初始化启动时，会解析设备树，并加载执行对应的驱动逻辑，驱动初始化运行时会注册生成对应的thermal zone， 见下图：
@@ -133,7 +131,7 @@ thermal_zone_device_register 代表注册一个thermal zone节点，他的温度
 
 
 
-参考链接有：
+参考链接：
 
 (1) https://hqber.com/archives/427/
 
