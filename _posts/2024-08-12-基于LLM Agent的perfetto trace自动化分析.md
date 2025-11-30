@@ -19,6 +19,7 @@ tags:
 AIGC正逐步应用到各个领域，改变大家的工作和生活方式。但深入到具体专业领域复杂问题，大模型的分析深度还有待提高，针对该现状，构建智能体（Agent）则是AI工程应用当下的“终极形态”
 LLM Agent主要包括感知、分析、决策和执行四大能力。这些能力相互协同，构成了其基本的工作原理。
 在基于LLM的智能体中，LLM充当着智能体的大脑的角色，同时还有3个关键部分：规划、记忆、工具使用。
+
 1.Planning：LLM分解复杂任务，制定并执行多步骤计划来实现目标
 2.Memory：它存储和检索过去的信息和经验。这使得它能够在处理用户查询时，利用之前学到的知识和经验，提供更准确的答案 
 3.Tools：它能够灵活运用搜索引擎、数据库、API等工具，获取和整理相关信息，来支持任务的完成
@@ -199,6 +200,7 @@ Traceprocessor的sql语句是否可用，可输入到打开的trace文件的perf
 ##### (2) 建立获取某线程唤醒链信息的tool
 
 获取调用唤醒链的追踪相关的sql语句查询：
+
 step1:获取slice信息详情 
 
 	select thread.utid, slice.ts as startTime, (slice.ts + slice.dur) as endTime, slice.name as sliname, process.name as pname, thread.name as tname, *
