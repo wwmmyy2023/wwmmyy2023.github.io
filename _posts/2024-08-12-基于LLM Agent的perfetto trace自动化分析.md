@@ -17,13 +17,8 @@ tags:
 ### 1. LLM Agent背景介绍
 
 AIGC正逐步应用到各个领域，改变大家的工作和生活方式。但深入到具体专业领域复杂问题，大模型的分析深度还有待提高，针对该现状，构建智能体（Agent）则是AI工程应用当下的“终极形态”
-
-Agent工作流不是让LLM直接生成最终输出，而是多次提示LLM，使其有机会逐步构建更高质量的输出
-
 LLM Agent主要包括感知、分析、决策和执行四大能力。这些能力相互协同，构成了其基本的工作原理。
-
 在基于LLM的智能体中，LLM充当着智能体的大脑的角色，同时还有3个关键部分：规划、记忆、工具使用。
-
 1.Planning：LLM分解复杂任务，制定并执行多步骤计划来实现目标
 2.Memory：它存储和检索过去的信息和经验。这使得它能够在处理用户查询时，利用之前学到的知识和经验，提供更准确的答案 
 3.Tools：它能够灵活运用搜索引擎、数据库、API等工具，获取和整理相关信息，来支持任务的完成
@@ -43,17 +38,13 @@ AI Agent 调用工具运行时序图如下：
 	  自然语言   LangChain  工具路由   数据查询   结果整合   AI总结
 	   输入      等开源框架   机制       执行      处理      输出
 
-
 ![](https://wwmmyy2023.github.io/img/llm.jpg)
-
 
 
 ### 3. 建立分析perfetto trace工具集
 
 对于Android perfetto trace的分析，Google 提供了TraceProcessor开源软件工具，它能够解析和分析追踪trace数据。同时该库提供了一套查询引擎库以及CPU Usage、APP start等场景标准metric指标的默认实现，可作为自动分析辅助工具集的一部分。
-
 此外基于传统分析经验及分析故障树，将其转化为TraceProcessor自动化解析脚本分析能力，进而形成特有的Agent tool分析工具集。
-
 TraceProcessor可以将perfetto trace文件转成数据库表，也可以使用trace_processor_shell工具在命令行进行操作，对于自动化分析来说，适合采用Traceprocessor api动态操作perfetto trace文件。
 
 #### 3.1 建立TraceProcessor 自助查询工具 示例
@@ -207,7 +198,6 @@ Traceprocessor的sql语句是否可用，可输入到打开的trace文件的perf
 ##### (2) 建立获取某线程唤醒链信息的tool
 
 获取调用唤醒链的追踪相关的sql语句查询：
-
 step1:获取slice信息详情 
 
 	select thread.utid, slice.ts as startTime, (slice.ts + slice.dur) as endTime, slice.name as sliname, process.name as pname, thread.name as tname, *
@@ -370,5 +360,4 @@ step4:唤醒源不为空,说明这里找到了唤醒源threadid,继续往下跟
 ![](https://wwmmyy2023.github.io/img/perfetto/query_4.jpg)
 
 当前采用的是阿里 qwen model，不同的模型分析深度有差异。model可以随时替换，做对比。 
-
 如果想深入分析，可以持续升级增加自定义tool。对于一些分析思路相关固定的场景，可以采用LangGraph框架，分析结果更精准稳定。
